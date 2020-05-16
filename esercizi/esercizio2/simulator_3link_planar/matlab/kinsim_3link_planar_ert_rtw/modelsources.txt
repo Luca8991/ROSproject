@@ -1,2 +1,0 @@
-  kinsim_3link_planar.cpp
-

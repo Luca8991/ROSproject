@@ -1,2 +1,0 @@
-  dynsim_3link_planar.cpp
-

@@ -20,6 +20,7 @@ class planner_cartesian
 
     /* Parameters from ROS parameter server */
     bool elbow_high;
+    bool shoulder_right;
     int num_coordinate;
     double start_delay;
     double max_acc, max_vel;
@@ -36,7 +37,7 @@ class planner_cartesian
     cartesian_planning* cartesian_planner;
 
     /* Node private functions */
-		void inverse_kinematics(double p[], double q[], bool elbow_high);
+		void inverse_kinematics(double p[], double q[], bool elbow_high, bool shoulder_right);
     void inverse_diffkinematics(double pv[], double q[], double qv[]);
 
   public:

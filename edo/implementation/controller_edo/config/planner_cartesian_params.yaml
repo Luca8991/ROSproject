@@ -1,0 +1,14 @@
+# Cartesian planner configuration parameters
+  /planner_cartesian/run_period: 0.01           # Node execution period
+  /planner_cartesian/start_delay: 5.0           # Execution start delay
+
+  /planner_cartesian/pi: [0.0, 0.0, 0.0]            # Initial position [m]
+  /planner_cartesian/pf: [0.8, 0.8, 0.8]            # Final position [m]
+
+  /planner_cartesian/max_acc: 0.5               # Maximum acceleration [m/s^2]
+  /planner_cartesian/max_vel: 1.0               # Maximum velocity [m/s]
+
+  /planner_cartesian/elbow_high: true          # Inverse kinematic solution (elbow high/elbow low)
+  
+  /planner_cartesian/link_length: [0.334962, 0.210498, 0.427990]    # Link length [m]
+

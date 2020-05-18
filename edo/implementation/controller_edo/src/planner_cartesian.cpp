@@ -53,6 +53,12 @@ void planner_cartesian::Prepare(void)
  if (false == Handle.getParam(FullParamName, elbow_high))
   ROS_ERROR("Node %s: unable to retrieve parameter %s.", ros::this_node::getName().c_str(), FullParamName.c_str());
 
+ //shoulder_right
+ FullParamName = ros::this_node::getName()+"/shoulder_right";
+
+ if (false == Handle.getParam(FullParamName, shoulder_right))
+  ROS_ERROR("Node %s: unable to retrieve parameter %s.", ros::this_node::getName().c_str(), FullParamName.c_str());
+
  // link_length
  FullParamName = ros::this_node::getName()+"/link_length";
 
@@ -116,8 +122,8 @@ void planner_cartesian::PeriodicTask(void)
 
   /* Convert a cartesian into a joint trajectory */
   double q[num_coordinate], qv[num_coordinate];
-  inverse_kinematics(p, q, elbow_high);
-  //inverse_diffkinematics(pv, q, qv);
+  inverse_kinematics(p, q, elbow_high, shoulder_right);
+  inverse_diffkinematics(pv, q, qv);
 
   /* Publish a joint trajectory point */
   trajectory_msgs::JointTrajectoryPoint jointTrajectory;
@@ -129,7 +135,7 @@ void planner_cartesian::PeriodicTask(void)
   for (int i=0; i<num_coordinate; i++)
   {
     jointTrajectory.positions.push_back(q[i]);
-    //jointTrajectory.velocities.push_back(qv[i]);
+    jointTrajectory.velocities.push_back(qv[i]);
   }
 
   jointTrajectory_publisher.publish(jointTrajectory);
@@ -151,20 +157,24 @@ void planner_cartesian::PeriodicTask(void)
   cartesianTrajectory_publisher.publish(cartesianTrajectory);
 }
 
-void planner_cartesian::inverse_kinematics(double p[], double q[], bool elbow_high){
+void planner_cartesian::inverse_kinematics(double p[], double q[], bool elbow_high, bool shoulder_right){
+    ROS_INFO("L1: %f", link_length.at(0));
+    ROS_INFO("L2: %f", link_length.at(1));
+    ROS_INFO("L3: %f", link_length.at(2));
+
     double c3 = (pow(p[0], 2.0) + pow(p[1], 2.0) + pow(p[2], 2.0) - pow(link_length.at(1), 2.0) - pow(link_length.at(2), 2.0)) /
-                (2.0 * link_length.at(1) * link_length.at(2));
+                ( 2.0 * link_length.at(1) * link_length.at(2) );
     
     double s3;
     if (elbow_high){
-      s3 = pow(1.0 - pow(c3, 2.0), 0.5);
+      s3 = pow((1.0 - pow(c3, 2.0)), 0.5);
     }
     else{
-      s3 = -pow(1.0 - pow(c3, 2.0), 0.5);
+      s3 = -pow((1.0 - pow(c3, 2.0)), 0.5);
     }
 
     int sign;
-    if (elbow_high){
+    if (shoulder_right){
       sign = 1;
     } else {
       sign = -1;
@@ -172,6 +182,7 @@ void planner_cartesian::inverse_kinematics(double p[], double q[], bool elbow_hi
 
     ROS_INFO("sign: %d", sign);
     ROS_INFO("elbow_high: %d", elbow_high);
+    ROS_INFO("shoulder_right: %d", shoulder_right);
 
     double c2 = ( sign * ( pow(pow(p[0], 2.0) + pow(p[1], 2.0), 0.5) ) * (link_length.at(1) + link_length.at(2) * c3) + p[2] * link_length.at(2) * s3 ) /
                 ( pow(link_length.at(1), 2.0) + pow(link_length.at(2), 2.0) + 2.0 * link_length.at(1) * link_length.at(2) * c3 );
@@ -187,12 +198,46 @@ void planner_cartesian::inverse_kinematics(double p[], double q[], bool elbow_hi
     ROS_INFO("p1: %f", p[1]);
     ROS_INFO("p2: %f", p[2]);
 
-    q[0] = atan2(p[1], p[0]);
+    q[0] = atan2((sign*p[1]), (sign*p[0]));
     q[1] = atan2(s2, c2);
     q[2] = atan2(s3, c3);
+
+    ROS_INFO("q0: %f", q[0]);
+    ROS_INFO("q1: %f", q[1]);
+    ROS_INFO("q2: %f", q[2]);
 }
 
 void planner_cartesian::inverse_diffkinematics(double pv[], double q[], double qv[]){
+  double s1 = sin(q[0]);
+  double c1 = cos(q[0]);
+  double c2 = cos(q[1]);
+  double s2 = sin(q[1]);
+  double c3 = cos(q[2]);
+  double s3 = sin(q[2]);
+
+  double s23 = sin(q[1]+q[2]); 
+  double c23 = cos(q[1]+q[2]);
+
+  double a1 = link_length.at(0);
+  double a2 = link_length.at(1);
+  double a3 = link_length.at(2);
+
+  double pv1 = pv[0];
+  double pv2 = pv[1];
+  double pv3 = pv[2];
+
+  double detJ = a2*(a3*a3)*(c1*c1)*(c23*c23)*s2-(a2*a2)*a3*(c1*c1)*(c2*c2)*s23+a2*(a3*a3)*(c23*c23)*(s1*s1)*s2-(a2*a2)*a3*(c2*c2)*(s1*s1)*s23+(a2*a2)*a3*(c1*c1)*c2*c23*s2-a2*(a3*a3)*(c1*c1)*c2*c23*s23+(a2*a2)*a3*c2*c23*(s1*s1)*s2-a2*(a3*a3)*c2*c23*(s1*s1)*s23;
+  if (fabs(detJ)<=1e-3){
+    ROS_INFO("DETJ PROBLEM!");
+    detJ = 1e-3;
+  }
+
+  qv[0] = (c1*pv2)/(a2*(c1*c1)*c2+a3*(c1*c1)*c23+a2*c2*(s1*s1)+a3*c23*(s1*s1))-(pv1*s1)/(a2*(c1*c1)*c2+a3*(c1*c1)*c23+a2*c2*(s1*s1)+a3*c23*(s1*s1));
+  qv[1] = (pv3*s23)/(a2*c2*s23-a2*c23*s2)+(c1*c23*pv1)/(a2*(c1*c1)*c2*s23-a2*(c1*c1)*c23*s2+a2*c2*(s1*s1)*s23-a2*c23*(s1*s1)*s2)+(c23*pv2*s1)/(a2*(c1*c1)*c2*s23-a2*(c1*c1)*c23*s2+a2*c2*(s1*s1)*s23-a2*c23*(s1*s1)*s2);
+  qv[2] = -(pv3*(a2*s2+a3*s23))/(a2*a3*c2*s23-a2*a3*c23*s2)-(c1*pv1*(a2*c2+a3*c23))/(a2*a3*(c1*c1)*c2*s23-a2*a3*(c1*c1)*c23*s2+a2*a3*c2*(s1*s1)*s23-a2*a3*c23*(s1*s1)*s2)-(pv2*s1*(a2*c2+a3*c23))/(a2*a3*(c1*c1)*c2*s23-a2*a3*(c1*c1)*c23*s2+a2*a3*c2*(s1*s1)*s23-a2*a3*c23*(s1*s1)*s2);
+}
+
+/*void planner_cartesian::inverse_diffkinematics(double pv[], double q[], double qv[]){
   double s1 = sin(q[0]);
   double c1 = cos(q[0]);
   double s12 = sin(q[0]+q[1]); 
@@ -205,4 +250,4 @@ void planner_cartesian::inverse_diffkinematics(double pv[], double q[], double q
 
   qv[0] = ((link_length.at(1) * c12) * pv[0] + (link_length.at(1) * s12) * pv[1]) / detJ;
   qv[1] = -((link_length.at(0) * c1 + link_length.at(1) * c12)* pv[0] + (link_length.at(0) * s1 + link_length.at(1) * s12) * pv[1]) / detJ;
-}
+}*/

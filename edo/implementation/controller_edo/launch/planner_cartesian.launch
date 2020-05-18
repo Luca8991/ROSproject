@@ -12,9 +12,9 @@
 
   <!-- Run the kinematic simulator -->
   <node pkg="kinsim_3link_planar" type="kinsim_3link_planar_node" name="kinsim_3link_planar">
-    <rosparam param="q1_initial">0</rosparam>
-    <rosparam param="q2_initial">0</rosparam>
-    <rosparam param="q3_initial">0</rosparam>
+    <rosparam param="q1_initial">0.0</rosparam>
+    <rosparam param="q2_initial">0.0</rosparam>
+    <rosparam param="q3_initial">0.0</rosparam>
   </node>
 
   <!--- Run planner_joint node -->

@@ -1,14 +1,18 @@
 # Cartesian planner configuration parameters
   /planner_cartesian/run_period: 0.01           # Node execution period
-  /planner_cartesian/start_delay: 5.0           # Execution start delay
+  /planner_cartesian/start_delay: 2.0           # Execution start delay
 
-  /planner_cartesian/pi: [0.0, 0.0, 0.0]            # Initial position [m]
-  /planner_cartesian/pf: [0.8, 0.8, 0.8]            # Final position [m]
-
+  /planner_cartesian/pi: [0.210498, 0.001, 0.334962]            # Initial position [m]
+  /planner_cartesian/pf: [0.105249, 0.105249, 0.186117]         # Final position [m]
+#                         q1=45, q2=45
   /planner_cartesian/max_acc: 0.5               # Maximum acceleration [m/s^2]
   /planner_cartesian/max_vel: 1.0               # Maximum velocity [m/s]
 
-  /planner_cartesian/elbow_high: true          # Inverse kinematic solution (elbow high/elbow low)
+  /planner_cartesian/elbow_high: false          # Inverse kinematic solution (elbow high/elbow low)
+  /planner_cartesian/shoulder_right: false      # Inverse kinematic solution (shoulder right/shoulder left)
   
   /planner_cartesian/link_length: [0.334962, 0.210498, 0.427990]    # Link length [m]
 
+# cartPos(1) = L2*cos(q1)*cos(q2);
+# cartPos(2) = L2*sin(q1)*cos(q2);
+# cartPos(3) = -L2*sin(q2) + L1;

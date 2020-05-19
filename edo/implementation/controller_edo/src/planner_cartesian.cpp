@@ -166,28 +166,28 @@ void planner_cartesian::inverse_kinematics(double p[], double q[], bool elbow_hi
                 ( 2.0 * link_length.at(1) * link_length.at(2) );
     
     double s3;
-    if (elbow_high){
+    if (shoulder_right){
       s3 = pow((1.0 - pow(c3, 2.0)), 0.5);
     }
     else{
       s3 = -pow((1.0 - pow(c3, 2.0)), 0.5);
     }
 
-    int sign;
-    if (shoulder_right){
-      sign = 1;
+    int sgn;
+    if (elbow_high){
+      sgn = 1;
     } else {
-      sign = -1;
+      sgn = -1;
     }
 
-    ROS_INFO("sign: %d", sign);
+    ROS_INFO("sign: %d", sgn);
     ROS_INFO("elbow_high: %d", elbow_high);
     ROS_INFO("shoulder_right: %d", shoulder_right);
 
-    double c2 = ( sign * ( pow(pow(p[0], 2.0) + pow(p[1], 2.0), 0.5) ) * (link_length.at(1) + link_length.at(2) * c3) + p[2] * link_length.at(2) * s3 ) /
+    double c2 = ( sgn * ( pow(pow(p[0], 2.0) + pow(p[1], 2.0), 0.5) ) * (link_length.at(1) + link_length.at(2) * c3) + p[2] * link_length.at(2) * s3 ) /
                 ( pow(link_length.at(1), 2.0) + pow(link_length.at(2), 2.0) + 2.0 * link_length.at(1) * link_length.at(2) * c3 );
 
-    double s2 = ( p[2] * (link_length.at(1) + link_length.at(2) * c3) + (-sign) * ( pow(pow(p[0], 2.0) + pow(p[1], 2.0), 0.5) ) * link_length.at(2) * s3 ) /
+    double s2 = ( p[2] * (link_length.at(1) + link_length.at(2) * c3) + (-1*sgn) * ( pow(pow(p[0], 2.0) + pow(p[1], 2.0), 0.5) ) * link_length.at(2) * s3 ) /
                 ( pow(link_length.at(1), 2.0) + pow(link_length.at(2), 2.0) + 2.0 * link_length.at(1) * link_length.at(2) * c3 );
 
     ROS_INFO("c2: %f", c2);
@@ -198,7 +198,7 @@ void planner_cartesian::inverse_kinematics(double p[], double q[], bool elbow_hi
     ROS_INFO("p1: %f", p[1]);
     ROS_INFO("p2: %f", p[2]);
 
-    q[0] = atan2((sign*p[1]), (sign*p[0]));
+    q[0] = atan2((sgn*p[1]), (sgn*p[0]));
     q[1] = atan2(s2, c2);
     q[2] = atan2(s3, c3);
 

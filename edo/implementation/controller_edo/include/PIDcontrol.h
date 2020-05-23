@@ -19,7 +19,7 @@ class PIDcontrol
         PIDcontrol(double Kc, double Ti, double Td, double N, double Ts, double uMin, double uMax);
         ~PIDcontrol();
 
-        void execute(double y, double ysp, double& u);
+        void execute(double y, double ysp, double& u, bool ac);
         void resetState();
 };
 

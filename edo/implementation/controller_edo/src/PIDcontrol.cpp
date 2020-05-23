@@ -122,13 +122,19 @@ PIDcontrol::~PIDcontrol()
     // Do nothing
 }
 
-void PIDcontrol::execute(double y, double ysp, double& u)
+void PIDcontrol::execute(double y, double ysp, double& u, bool ac)
 {
     // PID implemented equation
     // Kc * (1 + 1/Ti*1/s + s*Td/(1+s*Td/N)
 
     // Compute PID actions
-    double e  = ysp-y;
+    double e;
+    if (ac){
+        e  = ysp-y;
+    } else{
+        e = ysp;
+    }
+    //double e  = ysp;
     double uD = b1*uD_old + b2*(e-e_old);
     double uI = uI_old + a1*e;
 

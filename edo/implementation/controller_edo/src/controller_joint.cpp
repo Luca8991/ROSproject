@@ -141,7 +141,7 @@ void controller_joint::PeriodicTask(void)
       double v_des;
 
       // Position control
-      P_pos.at(i)->execute(joint_pos.at(i), plan_pos.at(i), v_des, false);
+      P_pos.at(i)->execute(joint_pos.at(i), plan_pos.at(i), v_des, true);
 
       // Velocity control
       PI_vel.at(i)->execute(joint_vel.at(i), v_des, joint_torque.at(i), true);

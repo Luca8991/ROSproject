@@ -4,7 +4,7 @@
 #include "ros/ros.h"
 #include "cartesian_planning.h"
 
-#define RUN_PERIOD_DEFAULT 0.1
+#define RUN_PERIOD_DEFAULT 0.01
 /* Used only if the actual value of the period is not retrieved from the ROS parameter server */
  
 #define NAME_OF_THIS_NODE "planner_cartesian"

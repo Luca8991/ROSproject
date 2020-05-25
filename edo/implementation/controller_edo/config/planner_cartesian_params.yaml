@@ -1,9 +1,9 @@
 # Cartesian planner configuration parameters
   /planner_cartesian/run_period: 0.001           # Node execution period
-  /planner_cartesian/start_delay: 2.0           # Execution start delay
+  /planner_cartesian/start_delay: 0.5           # Execution start delay
 
   /planner_cartesian/pi: [0.210498, 0.001, 0.334962]            # Initial position [m]
-  /planner_cartesian/pf: [0.105249, 0.001, 0.334962]         # Final position [m]
+  /planner_cartesian/pf: [0.105249, 0.105249, 0.186117]         # Final position [m]
 
   #[0.105249, 0.105249, 0.186117]
 

@@ -2,8 +2,9 @@ clear all
 close all
 
 % Load robot object from URDF
-robot_3link_planar = importrobot('../robots/edo_sim.urdf');
+robot_3link_planar = importrobot('/home/eulero/Documents/ros/ROSproject/edo/implementation/simulator_edo/robots/edo_sim.urdf');
 
+robot_3link_planar.Gravity = [0.0, 0.0, -9.81];
 % Parameters (same as in URDF)
 L0 = 0.145292221848281; % base_link [m]
 %L1 = 0.18967; % link_1 [m] (old)

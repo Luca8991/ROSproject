@@ -241,7 +241,7 @@
   </link>
   <joint
     name="joint_4"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="0.0088 -0.1588 0"
       rpy="-1.5708 0 0" />
@@ -294,7 +294,7 @@
   </link>
   <joint
     name="joint_5"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="0 0 -0.1053"
       rpy="3.1416 1.1102E-14 3.1416" />
@@ -347,7 +347,7 @@
   </link>
   <joint
     name="joint_6"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="-0.0039 0 0.1636"
       rpy="-1.5708 1.249E-14 0" />

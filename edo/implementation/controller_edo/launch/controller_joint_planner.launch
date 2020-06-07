@@ -15,9 +15,16 @@
     <rosparam param="q1_initial">0.0</rosparam>
     <rosparam param="q2_initial">1.57</rosparam>
     <rosparam param="q3_initial">0.0</rosparam>
+    <rosparam param="q4_initial">0.0</rosparam>
+    <rosparam param="q5_initial">0.0</rosparam>
+    <rosparam param="q6_initial">0.0</rosparam>
+
     <rosparam param="qv1_initial">0.0</rosparam>
     <rosparam param="qv2_initial">0.0</rosparam>
     <rosparam param="qv3_initial">0.0</rosparam>
+    <rosparam param="qv4_initial">0.0</rosparam>
+    <rosparam param="qv5_initial">0.0</rosparam>
+    <rosparam param="qv6_initial">0.0</rosparam>
   </node>
 
   <!--- Run planner_joint node -->

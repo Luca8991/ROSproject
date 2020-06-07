@@ -2,7 +2,7 @@ clear all
 close all
 
 % Load robot object from URDF
-robot_6link_edo = importrobot('/home/eulero/Documents/ros/ROSproject/edo/implementation/simulator_edo/robots/edo_sim.urdf');
+robot_6link_edo = importrobot('../robots/edo_sim.urdf');
 
 robot_6link_edo.Gravity = [0.0, 0.0, -9.81];
 % Parameters (same as in URDF)
